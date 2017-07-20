@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  
+  <h1>New Post</h1>
+  <form method='POST' action"/newpost" id="newpost">
+    <div>
+      <label>New Post Title:
+        <input type='text' name='title' value="{{post_title}}"/>
+      </label>
+      <p style="color:red;"><em>{{title_error}}</em></p>
+    </div>
+    <div>
+      <label>Post content:<br>
+        <textarea rows='10' form="newpost" name='body'/>{{post_body}}</textarea>
+      </label>
+      <p style="color:red;"><em>{{body_error}}</em></p>
+    </div>
+    <div>
+    <em>Posts are saved as a draft by default.</em><br>
+    <label>Publish this post?
+      <input type='checkbox' id='draft' name='draft' value=False />Yes 
+    </label>
+    </div>
+    <input type='submit' value='Save Post'/>
+  </form>
+
+{% endblock %}

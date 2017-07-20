@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  
+  {% if posts|length==0 %}
+  <p>No posts currently available</p>
+  {% else %}
+    {% for post in posts %}
+    <article>
+      <h3><a href="/single?id={{post.id}}">{{post.title}}</a></h3>
+      <p>{{post.body}}</p>
+    </article>
+    <hr>
+    {% endfor %}
+  {% endif %}
+
+{% endblock %}

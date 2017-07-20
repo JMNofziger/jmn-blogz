@@ -1,0 +1,7 @@
+# don't store db config
+db-info.ini
+# other stuff
+*.swp
+.vscode
+.DS_Store
+*.pyc
