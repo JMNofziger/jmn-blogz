@@ -14,18 +14,31 @@ app.config['SQLALCHEMY_DATABASE_URI']= uristring
 app.config['SQLALCHEMY_ECHO']=True
 db = SQLAlchemy(app)
 
+class User(db.Model):
+    id=db.Column(db.Integer, primary_key=True)
+    email=db.Column(db.String(120))
+    password=db.Column(db.String(120), unique=True, nullable=False)
+    # refers to owner property in post object
+    blogs = db.relationship('Post', backref='owner')
+
+    def __init__(self,email,password):
+        self.email=email
+        self.password=password
+
 class Post(db.Model):
     id=db.Column(db.Integer, primary_key = True)
     title=db.Column(db.String(120))
     body=db.Column(db.Text)
     date=db.Column(db.DateTime, nullable=False)
     draft=db.Column(db.Boolean, default=True, nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, title, body, draft):
+    def __init__(self, title, body, draft, owner):
         self.title=title
         self.body=body
         self.draft=draft
         self.date=datetime.now()
+        self.owner=owner
 
 @app.route('/', methods=['GET'])
 def index():
