@@ -118,7 +118,7 @@ def logout():
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
 
-    owner = User.query(filter_by(session['email'])).first()
+    owner = User.query.filter_by(email=session['email']).first()
 
     if request.method == 'POST':
         title_error = ""
