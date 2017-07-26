@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import configparser,os 
@@ -9,10 +9,12 @@ app.config['DEBUG'] = True
 dbconfig = configparser.ConfigParser()
 dbconfig.read("db-info.ini")
 uristring = dbconfig.get("dbconfig","mysecret")
+sessionkey = dbconfig.get("dbconfig","anothersecret")
 #app.config['SQLALCHEMY_DATABASE_URI']= os.environ.get('DATABASE_URL', uristring)
 app.config['SQLALCHEMY_DATABASE_URI']= uristring
 app.config['SQLALCHEMY_ECHO']=True
 db = SQLAlchemy(app)
+app.secret_key=sessionkey
 
 class User(db.Model):
     id=db.Column(db.Integer, primary_key=True)
@@ -40,6 +42,17 @@ class Post(db.Model):
         self.date=datetime.now()
         self.owner=owner
 
+@app.before_request
+def require_login():
+    # list of routes that users don't need to be logged in to see
+    allowed_routes =['login', 'register']
+    # if the page that user is req not in allowed_routes list AND 
+    # if there is no key called 'email' in the session object dictionary
+    # request.endpoint is the representation of the incoming http request with endpoint designating the requested path
+    if request.endpoint not in allowed_routes and 'email' not in session:
+        # this forces the user to login
+        return redirect('/login')
+
 @app.route('/')
 def index():
     posts = Post.query.all()
@@ -64,6 +77,36 @@ def login():
             flash('User password incorrect, or user does not exist', 'error') 
 
     return render_template('login.html')
+
+@app.route('/register' , methods=['GET','POST'])
+def register():
+
+    if request.method == 'POST':
+        user_email = request.form['email']
+        user_pwd = request.form['password']
+        user_vpwd = request.form['verify']
+        
+        check_existing = User.query.filter_by(email=user_email).first()
+        
+        if user_email == "" or user_pwd == "":
+            incomplete_error = "All fields must be completed"
+            return render_template("register.html", incomplete_error=incomplete_error,email=user_email)
+
+        if check_existing == None: 
+            if user_pwd == user_vpwd:
+                new_user=User(user_email, user_pwd)
+                db.session.add(new_user)
+                db.session.commit()
+                session['email']=user_email
+                return redirect('/')
+            else:
+                pwd_error = "Passwords must match"
+                return render_template('register.html', pwd_error=pwd_error, email=user_email)
+        else:
+            error = "A user with that email already exists" 
+            return render_template('register.html', user_error=error,email=user_email)
+
+    return render_template('register.html')
 
 @app.route('/logout', methods=['POST'])
 def logout():
