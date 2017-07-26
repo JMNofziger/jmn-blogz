@@ -40,13 +40,42 @@ class Post(db.Model):
         self.date=datetime.now()
         self.owner=owner
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def index():
     posts = Post.query.all()
     return render_template("blog.html",posts=posts, title="JMN BAB Blog")
 
+@app.route('/login', methods=['POST', 'GET'])
+    if request.method == 'POST':
+        user_email=request.form['email']
+        form_password=request.form['password']
+       
+        user = User.query.filter_by(email=user_email).first()
+        
+        if user and user.password == form_password:
+            #session is an obj that you can use to store data, associated with specific user from one request to another; allows server to remember data associated with that user
+            success="Successfully logged in"
+            session['email']=user_email
+            # flash function 
+            flash("Logged in")
+            return redirect('/')
+        else:
+            flash('User password incorrect, or user does not exist', 'error') 
+
+    return render_template('login.html')
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    # removes email from session to signal logout
+    del session['email']
+    flash('Successfully logged out')
+    return redirect('/')
+
 @app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
+
+    owner = User.query(filter_by(session['email'])).first()
+
     if request.method == 'POST':
         title_error = ""
         body_error = ""
@@ -66,7 +95,7 @@ def new_post():
                     post_body=post_body,
                     body_error=body_error)
 
-        new_post=Post(post_title,post_body,post_draft)
+        new_post=Post(post_title,post_body,post_draft,owner)
         db.session.add(new_post)
         db.session.commit()
         post = Post.query.filter_by(id=new_post.id).all()
