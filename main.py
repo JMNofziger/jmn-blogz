@@ -46,6 +46,7 @@ def index():
     return render_template("blog.html",posts=posts, title="JMN BAB Blog")
 
 @app.route('/login', methods=['POST', 'GET'])
+def login():
     if request.method == 'POST':
         user_email=request.form['email']
         form_password=request.form['password']
