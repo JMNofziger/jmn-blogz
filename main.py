@@ -45,7 +45,7 @@ class Post(db.Model):
 @app.before_request
 def require_login():
     # list of routes that users don't need to be logged in to see
-    allowed_routes =['login', 'register']
+    allowed_routes =['login', 'register', '/']
     # if the page that user is req not in allowed_routes list AND 
     # if there is no key called 'email' in the session object dictionary
     # request.endpoint is the representation of the incoming http request with endpoint designating the requested path
@@ -53,7 +53,7 @@ def require_login():
         # this forces the user to login
         return redirect('/login')
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def index():
     posts = Post.query.all()
     return render_template("blog.html",posts=posts, title="JMN BAB Blog")
@@ -108,7 +108,7 @@ def register():
 
     return render_template('register.html')
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout')
 def logout():
     # removes email from session to signal logout
     del session['email']
