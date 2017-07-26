@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+  {% block content %}
+  <p>If you don't have an account, you may <a href="/register">register</a> to gain access</p>
+  <form action="/login" method="post">
+    <p>
+      <label for="email">Email
+        <input name="email" type="email" value="{{ email }}"/>
+      </label>
+    </p>
+    <p>
+      <label for="password">Password
+        <input name="password" type="password"/>
+      </label>
+    </p>
+    <p>
+      <input type="submit" value="Login">
+    </p>
+  </form>
+
+  {% endblock %}
