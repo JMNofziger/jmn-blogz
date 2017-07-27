@@ -45,7 +45,7 @@ class Post(db.Model):
 @app.before_request
 def require_login():
     # list of routes that users don't need to be logged in to see
-    allowed_routes =['login', 'register', 'index']
+    allowed_routes =['get_posts', 'login', 'register', 'index', 'show_post']
     # if the page that user is req not in allowed_routes list AND 
     # if there is no key called 'email' in the session object dictionary
     # request.endpoint is the representation of the incoming http request with endpoint designating the requested path
@@ -153,10 +153,18 @@ def show_post():
     post=Post.query.filter_by(id=post_id).all()
     return render_template('single-post.html', post=post)
 
-@app.route('/blog', methods=['GET'])
+@app.route('/blog', methods=['GET', 'POST'])
 def get_posts():
     posts=Post.query.all()
-    return render_template('blog.html',posts=posts)
+    
+    if 'owner_id' in request.args:
+        owner_id=request.args['owner_id']
+        user=User.query.filter_by(id=owner_id).first()
+        posts=Post.query.filter_by(owner_id=owner_id).all()
+        return render_template('blog.html', posts=posts, user=user)
+    else:
+        return render_template('blog.html',posts=posts)
+    #return render_template('blog.html',posts=posts)
 
 if __name__ == '__main__':
     app.run()
