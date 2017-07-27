@@ -55,8 +55,9 @@ def require_login():
 
 @app.route('/', methods=['GET','POST'])
 def index():
-    posts = Post.query.all()
-    return render_template("blog.html",posts=posts, title="JMN BAB Blog")
+
+    users = User.query.all()
+    return render_template("index.html",users=users, title="JMN BAB Blog")
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -154,7 +155,8 @@ def show_post():
 
 @app.route('/blog', methods=['GET'])
 def get_posts():
-    return redirect('/')
+    posts=Post.query.all()
+    return render_template('blog.html',posts=posts)
 
 if __name__ == '__main__':
     app.run()
