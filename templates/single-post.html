@@ -7,6 +7,7 @@
       <p>
       {{post.body}}
       </p>
+      <p><em><a href="/blog?owner_id={{post.owner_id}}">written by {{post.owner.email}}</a></em></p>
     </article>
     {% endfor %}
   {% endblock %}
