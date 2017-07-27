@@ -10,8 +10,8 @@ dbconfig = configparser.ConfigParser()
 dbconfig.read("db-info.ini")
 uristring = dbconfig.get("dbconfig","mysecret")
 sessionkey = dbconfig.get("dbconfig","anothersecret")
-#app.config['SQLALCHEMY_DATABASE_URI']= os.environ.get('DATABASE_URL', uristring)
-app.config['SQLALCHEMY_DATABASE_URI']= uristring
+app.config['SQLALCHEMY_DATABASE_URI']= os.environ.get('DATABASE_URL', uristring)
+#app.config['SQLALCHEMY_DATABASE_URI']= uristring
 app.config['SQLALCHEMY_ECHO']=True
 db = SQLAlchemy(app)
 app.secret_key=sessionkey
