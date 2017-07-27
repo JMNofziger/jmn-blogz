@@ -155,16 +155,15 @@ def show_post():
 
 @app.route('/blog', methods=['GET', 'POST'])
 def get_posts():
-    posts=Post.query.all()
-    
+   
     if 'owner_id' in request.args:
         owner_id=request.args['owner_id']
         user=User.query.filter_by(id=owner_id).first()
         posts=Post.query.filter_by(owner_id=owner_id).all()
         return render_template('blog.html', posts=posts, user=user)
     else:
+        posts=Post.query.all()
         return render_template('blog.html',posts=posts)
-    #return render_template('blog.html',posts=posts)
 
 if __name__ == '__main__':
     app.run()
