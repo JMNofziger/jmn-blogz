@@ -45,7 +45,7 @@ class Post(db.Model):
 @app.before_request
 def require_login():
     # list of routes that users don't need to be logged in to see
-    allowed_routes =['login', 'register', '/']
+    allowed_routes =['login', 'register', 'index']
     # if the page that user is req not in allowed_routes list AND 
     # if there is no key called 'email' in the session object dictionary
     # request.endpoint is the representation of the incoming http request with endpoint designating the requested path
@@ -72,7 +72,7 @@ def login():
             session['email']=user_email
             # flash function 
             flash("Logged in")
-            return redirect('/')
+            return redirect('/newpost')
         else:
             flash('User password incorrect, or user does not exist', 'error') 
 

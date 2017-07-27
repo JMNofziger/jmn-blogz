@@ -16,7 +16,8 @@
   </head>
   <header>
     <nav>
-      <p style="display:inline-block;"><a href="/">Main Blog Page</a></p>
+      <p style="display:inline-block;"><a href="/">Home</a></p>
+      <p style="display:inline-block;"><a href="/blog">Blog Page</a></p>
       <p style="display:inline-block;"><a href="/newpost">Add a Blog Entry</a></p>
     </nav>
   </header>
@@ -25,7 +26,7 @@
   <p>You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-    <div><a href="/login">login</a> <a href="/logout">logout</a></div>
+    <div><a href="/login">login</a> <a href="/logout">logout</a> <a href="/register">create account</a></div>
     {% with messages = get_flashed_messages(with_categories=True) %}
       
     <ul>
